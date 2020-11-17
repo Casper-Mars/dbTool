@@ -7,7 +7,6 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 	"log"
 	"os"
-	"strings"
 )
 
 func main() {
@@ -40,53 +39,22 @@ func onActivate(application *gtk.Application) {
 	}
 	appWindow.SetTitle("数据库表导出word工具v0.1")
 	appWindow.SetDefaultSize(400, 400)
-
-	layout, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 2) //以水平布局创建一个容器, 第二个参数是其中控件的像素间隔
-	if err != nil {
-		log.Fatal(err)
-	}
-	appWindow.Add(layout) //将布局添加到window中
-	ipPort := ui.NewFormInputWidget("ipPort")
-	layout.Add(ipPort.GetRow())
-	username := ui.NewFormInputWidget("username")
-	layout.Add(username.GetRow())
-	password := ui.NewFormInputWidget("password")
-	layout.Add(password.GetRow())
-	dbNames := ui.NewFormInputWidget("数据库名称(多个用逗号隔开)")
-	layout.Add(dbNames.GetRow())
-	storeLocation := ui.NewFormInputWidget("存储位置")
-	layout.Add(storeLocation.GetRow())
-
-	confrimButtonRow, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 10)
-	if err != nil {
-		log.Fatal(err)
-	}
-	layout.Add(confrimButtonRow)
-	confirmButton, err := gtk.ButtonNewWithLabel("导出")
-	if err != nil {
-		log.Fatal(err)
-	}
-	confrimButtonRow.Add(confirmButton)
-	confirmButton.Connect("clicked", func() {
-		ipPortText := ipPort.GetInputText()
-		usernameText := username.GetInputText()
-		passwordText := password.GetInputText()
-		dbNamesText := dbNames.GetInputText()
-		storeLocationText := storeLocation.GetInputText()
-		log.Println("ipPort:" + ipPortText)
-		log.Println("username:" + usernameText)
-		log.Println("password:" + passwordText)
-		log.Println("dbNames:" + dbNamesText)
-		log.Println("storeLocation:" + storeLocationText)
-		export(ipPortText, usernameText, passwordText, dbNamesText, storeLocationText)
+	appWindow.SetPosition(gtk.WIN_POS_CENTER)
+	exportUi := ui.NewExportUi()
+	appWindow.Add(exportUi.GetBox())
+	exportUi.GetConfirmButton().Connect("clicked", func() {
+		ipPort := exportUi.GetIpPort()
+		username := exportUi.GetUsername()
+		password := exportUi.GetPassword()
+		names := exportUi.GetDbNames()
+		storeLocation := exportUi.GetStoreLocation()
+		log.Println("ipPort:" + ipPort)
+		log.Println("username:" + username)
+		log.Println("password:" + password)
+		log.Println("dbNames:" + names)
+		log.Println("storeLocation:" + storeLocation)
+		exportService := service.ExportToWordService{}
+		exportService.Export(ipPort, username, password, names, storeLocation)
 	})
 	appWindow.ShowAll()
-}
-
-func export(ipPort string, username string, password string, dbNames string, storeLocation string) {
-	dbNameArray := strings.Split(dbNames, ",")
-	for _, dbName := range dbNameArray {
-		tableInfos := service.GetAllTableInfo(username, password, ipPort, dbName)
-		service.Export(tableInfos, dbName, storeLocation)
-	}
 }

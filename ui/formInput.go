@@ -6,14 +6,13 @@ import (
 )
 
 type FormInputWidget struct {
-	row           *gtk.Box
+	row           *gtk.Grid
 	inputTextArea *gtk.Entry
 	labelName     string
 }
 
 func NewFormInputWidget(labelName string) FormInputWidget {
-
-	boxNew, err := gtk.BoxNew(gtk.ORIENTATION_HORIZONTAL, 10)
+	row, err := gtk.GridNew()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -21,20 +20,20 @@ func NewFormInputWidget(labelName string) FormInputWidget {
 	if err != nil {
 		log.Fatal(err)
 	}
-	boxNew.Add(labelNew)
+	row.Attach(labelNew, 0, 0, 1, 1)
 	entryNew, err := gtk.EntryNew()
 	if err != nil {
 		log.Fatal(err)
 	}
-	boxNew.Add(entryNew)
+	row.Attach(entryNew, 1, 0, 2, 1)
 	return FormInputWidget{
 		labelName:     labelName,
-		row:           boxNew,
+		row:           row,
 		inputTextArea: entryNew,
 	}
 }
 
-func (widget FormInputWidget) GetRow() *gtk.Box {
+func (widget FormInputWidget) GetRow() *gtk.Grid {
 	return widget.row
 }
 
@@ -44,4 +43,8 @@ func (widget FormInputWidget) GetInputText() string {
 		log.Fatal(err)
 	}
 	return text
+}
+
+func (widget FormInputWidget) GetInputEntry() *gtk.Entry {
+	return widget.inputTextArea
 }
