@@ -38,7 +38,7 @@ func onActivate(application *gtk.Application) {
 	if err != nil {
 		log.Fatal("Could not create application window.", err)
 	}
-	appWindow.SetTitle("数据库表导出word工具")
+	appWindow.SetTitle("数据库表导出word工具v0.1")
 	appWindow.SetDefaultSize(400, 400)
 
 	layout, err := gtk.BoxNew(gtk.ORIENTATION_VERTICAL, 2) //以水平布局创建一个容器, 第二个参数是其中控件的像素间隔
