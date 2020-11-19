@@ -22,10 +22,10 @@ func Export(tables []pojo.TableInfo, dbName string, storeLocation string) {
 	if err := doc.Validate(); err != nil {
 		log.Fatalf("error during validation: %s", err)
 	}
-	if storeLocation == "" {
-		storeLocation = "./"
+	err := doc.SaveToFile(storeLocation + dbName + ".docx")
+	if err != nil {
+		log.Println("导出" + dbName + "失败")
 	}
-	doc.SaveToFile(storeLocation + dbName + ".docx")
 }
 
 func createOneTable(table pojo.TableInfo, doc *document.Document) {

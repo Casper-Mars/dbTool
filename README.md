@@ -52,3 +52,6 @@
 
 > 可以通过安装gtk+3. Mac系统通过brew可快速安装：brew install gtk+3
 
+### linux
+
+桌面版的发行版一般都自带gtk环境。
