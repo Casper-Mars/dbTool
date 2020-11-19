@@ -29,9 +29,26 @@
 
 ## 数据库导出支持列表
 
-|数据库|支持|
+|数据库|是否支持|
 |---|---|
 |mysql|支持|
 |sqlserver|不支持|
 |oracle|不支持|
 |SQLit|不支持|
+
+## 平台支持
+
+|平台|是否支持|
+|---|---|
+|Windows|暂不支持|
+|linux|支持|
+|macOS|支持|
+
+## 环境要求
+
+### macOS
+
+* glib-2.64
+
+> 可以通过安装gtk+3. Mac系统通过brew可快速安装：brew install gtk+3
+
