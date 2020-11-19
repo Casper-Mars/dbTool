@@ -15,7 +15,9 @@ func (export ExportToWordService) Export(ipPort string, username string, passwor
 		log.Println("参数不能为空")
 		return
 	}
-	if !strings.HasSuffix(storeLocation, string(os.PathSeparator)) {
+	if storeLocation == "" {
+		storeLocation = "./"
+	} else if !strings.HasSuffix(storeLocation, string(os.PathSeparator)) {
 		storeLocation = storeLocation + string(os.PathSeparator)
 	}
 	dbNameArray := strings.Split(dbNames, ",")
