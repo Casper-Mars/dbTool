@@ -40,7 +40,7 @@
 
 |平台|是否支持|
 |---|---|
-|Windows|暂不支持|
+|Windows|支持|
 |linux|支持|
 |macOS|支持|
 
@@ -55,3 +55,7 @@
 ### linux
 
 桌面版的发行版一般都自带gtk环境。
+
+### windows
+
+解压后运行dbtool.exe
