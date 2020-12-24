@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Casper-Mars/dbTool/service"
 	"github.com/Casper-Mars/dbTool/service/db"
 	"github.com/Casper-Mars/dbTool/ui"
 	"github.com/gotk3/gotk3/glib"
@@ -49,8 +50,12 @@ func onActivate(application *gtk.Application) {
 		log.Println("ipPort:" + ipPort)
 		log.Println("username:" + username)
 		log.Println("password:" + pwd)
-		bs := db.GetAllDBs("root", "!Zhisheng2020", "192.168.123.155:3306")
-		//bs := db.GetAllDBs(username, pwd, ipPort)
+		ok := checkData(appWindow.ToWindow(), ipPort, username, pwd)
+		if !ok {
+			return
+		}
+		//bs := db.GetAllDBs("root", "!Zhisheng2020", "192.168.123.155:3306")
+		bs := db.GetAllDBs(username, pwd, ipPort)
 		if len(bs) > 0 {
 			for _, k := range bs {
 				exportUi.AddDBToList(k)
@@ -68,8 +73,32 @@ func onActivate(application *gtk.Application) {
 		log.Println("password:" + password)
 		log.Println("dbNames:" + names)
 		log.Println("storeLocation:" + storeLocation)
-		//exportService := service.ExportToWordService{}
-		//exportService.Export(ipPort, username, password, names, storeLocation)
+		ok := checkData(appWindow.ToWindow(), ipPort, username, password)
+		if !ok {
+			return
+		}
+		exportService := service.ExportToWordService{}
+		exportService.Export(ipPort, username, password, names, storeLocation)
 	})
 	appWindow.ShowAll()
+}
+
+func checkData(
+	window *gtk.Window,
+	ipAndPort string,
+	username string,
+	pwd string) bool {
+	if len(ipAndPort) == 0 {
+		ui.ShowWarning(window, "ip和端口不能为空")
+		return false
+	}
+	if len(username) == 0 {
+		ui.ShowWarning(window, "用户名不能为空")
+		return false
+	}
+	if len(pwd) == 0 {
+		ui.ShowWarning(window, "密码不能为空")
+		return false
+	}
+	return true
 }
