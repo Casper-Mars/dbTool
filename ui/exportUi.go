@@ -6,13 +6,15 @@ import (
 )
 
 type ExportUi struct {
-	ipPort        *gtk.Entry
-	username      *gtk.Entry
-	password      *gtk.Entry
-	dbNames       *gtk.Entry
-	storeLocation *gtk.Entry
-	confirmButton *gtk.Button
-	layout        *gtk.Grid
+	ipPort              *gtk.Entry
+	username            *gtk.Entry
+	password            *gtk.Entry
+	dbNames             *gtk.Entry
+	storeLocation       *gtk.Entry
+	confirmButton       *gtk.Button
+	refreshDBListButton *gtk.Button
+	layout              *gtk.Grid
+	dbList              *DBListWidget
 }
 
 func NewExportUi() *ExportUi {
@@ -32,14 +34,23 @@ func NewExportUi() *ExportUi {
 	exportUi.ipPort = createInputFormRow("ip和端口", layout, 0)
 	exportUi.username = createInputFormRow("用户名", layout, 1)
 	exportUi.password = createInputFormRow("密码", layout, 2)
-	exportUi.dbNames = createInputFormRow("数据库s", layout, 3)
-	exportUi.storeLocation = createInputFormRow("存储位置", layout, 4)
-	button, err := gtk.ButtonNewWithLabel("导出")
+	exportUi.storeLocation = createInputFormRow("存储位置", layout, 3)
+	//exportUi.dbNames = createInputFormRow("数据库s", layout, 4)
+	rb, err := gtk.ButtonNewWithLabel("刷新数据库列表")
 	if err != nil {
 		log.Fatal(err)
 	}
-	layout.Attach(button, 0, 5, 3, 1)
-	exportUi.confirmButton = button
+	layout.Attach(rb, 0, 5, 3, 1)
+	exportUi.refreshDBListButton = rb
+	dbList := NewDBListWidget()
+	layout.Attach(dbList.layout, 0, 6, 3, 1)
+	exportUi.dbList = dbList
+	cb, err := gtk.ButtonNewWithLabel("导出")
+	if err != nil {
+		log.Fatal(err)
+	}
+	layout.Attach(cb, 0, 7, 3, 1)
+	exportUi.confirmButton = cb
 	return &exportUi
 }
 
@@ -68,6 +79,8 @@ func (ui ExportUi) GetPassword() string {
 }
 
 func (ui ExportUi) GetDbNames() string {
+	list := ui.dbList.getSelectedDBList()
+	log.Printf("%#v", list)
 	text, err := ui.dbNames.GetText()
 	if err != nil {
 		log.Fatal(err)
@@ -89,6 +102,17 @@ func (ui ExportUi) GetBox() *gtk.Grid {
 
 func (ui ExportUi) GetConfirmButton() *gtk.Button {
 	return ui.confirmButton
+}
+
+func (ui ExportUi) GetDBListRefreshButton() *gtk.Button {
+	return ui.refreshDBListButton
+}
+
+func (ui ExportUi) AddDBToList(dbName string) {
+	err := ui.dbList.AddDB(dbName)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func createInputFormRow(labelName string, layout *gtk.Grid, rowIndex int) *gtk.Entry {

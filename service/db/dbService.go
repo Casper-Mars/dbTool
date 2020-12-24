@@ -1,10 +1,12 @@
-package service
+package db
 
 import (
+	"database/sql"
 	"github.com/Casper-Mars/dbTool/pojo"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/xormplus/xorm"
 	"github.com/xormplus/xorm/schemas"
+	"log"
 )
 
 func GetAllTableInfo(username string, password string, ipPort string, dbName string) []pojo.TableInfo {
@@ -23,6 +25,29 @@ func GetAllTableInfo(username string, password string, ipPort string, dbName str
 		info[i] = tableInfoTmp
 	}
 	return info
+}
+
+func GetAllDBs(username string, password string, ipPort string) []string {
+	db, err := sql.Open("mysql", username+":"+password+"@tcp("+ipPort+")/")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	result, err := db.Query("show databases")
+	if err != nil {
+		log.Fatal(err)
+	}
+	dbNameList := make([]string, 0)
+	var dbName string
+	for result.Next() {
+		err = result.Scan(&dbName)
+		if err != nil {
+			log.Fatal(err)
+			continue
+		}
+		dbNameList = append(dbNameList, dbName)
+	}
+	return dbNameList
 }
 
 func extractCol(table *schemas.Table) []pojo.ColInfo {

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/Casper-Mars/dbTool/service/db"
 	"log"
 	"os"
 	"strings"
@@ -22,7 +23,7 @@ func (export ExportToWordService) Export(ipPort string, username string, passwor
 	}
 	dbNameArray := strings.Split(dbNames, ",")
 	for _, dbName := range dbNameArray {
-		tableInfos := GetAllTableInfo(username, password, ipPort, dbName)
+		tableInfos := db.GetAllTableInfo(username, password, ipPort, dbName)
 		Export(tableInfos, dbName, storeLocation)
 	}
 }

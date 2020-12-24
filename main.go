@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Casper-Mars/dbTool/service"
+	"github.com/Casper-Mars/dbTool/service/db"
 	"github.com/Casper-Mars/dbTool/ui"
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
@@ -42,6 +42,21 @@ func onActivate(application *gtk.Application) {
 	appWindow.SetPosition(gtk.WIN_POS_CENTER)
 	exportUi := ui.NewExportUi()
 	appWindow.Add(exportUi.GetBox())
+	exportUi.GetDBListRefreshButton().Connect("clicked", func() {
+		ipPort := exportUi.GetIpPort()
+		username := exportUi.GetUsername()
+		pwd := exportUi.GetPassword()
+		log.Println("ipPort:" + ipPort)
+		log.Println("username:" + username)
+		log.Println("password:" + pwd)
+		bs := db.GetAllDBs("root", "!Zhisheng2020", "192.168.123.155:3306")
+		//bs := db.GetAllDBs(username, pwd, ipPort)
+		if len(bs) > 0 {
+			for _, k := range bs {
+				exportUi.AddDBToList(k)
+			}
+		}
+	})
 	exportUi.GetConfirmButton().Connect("clicked", func() {
 		ipPort := exportUi.GetIpPort()
 		username := exportUi.GetUsername()
@@ -53,8 +68,8 @@ func onActivate(application *gtk.Application) {
 		log.Println("password:" + password)
 		log.Println("dbNames:" + names)
 		log.Println("storeLocation:" + storeLocation)
-		exportService := service.ExportToWordService{}
-		exportService.Export(ipPort, username, password, names, storeLocation)
+		//exportService := service.ExportToWordService{}
+		//exportService.Export(ipPort, username, password, names, storeLocation)
 	})
 	appWindow.ShowAll()
 }
