@@ -3,6 +3,7 @@ package ui
 import (
 	"github.com/gotk3/gotk3/gtk"
 	"log"
+	"strings"
 )
 
 type ExportUi struct {
@@ -81,11 +82,7 @@ func (ui ExportUi) GetPassword() string {
 func (ui ExportUi) GetDbNames() string {
 	list := ui.dbList.getSelectedDBList()
 	log.Printf("%#v", list)
-	text, err := ui.dbNames.GetText()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return text
+	return strings.Join(list, ",")
 }
 
 func (ui ExportUi) GetStoreLocation() string {
@@ -113,6 +110,10 @@ func (ui ExportUi) AddDBToList(dbName string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func (ui ExportUi) GetContent() gtk.IWidget {
+	return ui.layout
 }
 
 func createInputFormRow(labelName string, layout *gtk.Grid, rowIndex int) *gtk.Entry {
