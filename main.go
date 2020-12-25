@@ -35,7 +35,7 @@ func onActivate(application *gtk.Application) {
 	if err != nil {
 		log.Fatal("Could not create application window.", err)
 	}
-	appWindow.SetTitle("数据库表导出word工具v0.3")
+	appWindow.SetTitle("数据库表导出word工具v0.4")
 	appWindow.SetDefaultSize(400, 400)
 	appWindow.SetPosition(gtk.WIN_POS_CENTER)
 	exportWorker := worker.BuildExportWorkerWithWindow(appWindow.ToWindow())
