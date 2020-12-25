@@ -17,7 +17,7 @@ func BuildExportWorker() Worker {
 	return BuildExportWorkerWithWindow(nil)
 }
 func BuildExportWorkerWithWindow(app *gtk.Window) Worker {
-	exportAction := action.NewExportAction(export.ExportToWordService{}, db.MysqlService{})
+	exportAction := action.NewExportAction(export.WordExportService{}, db.MysqlService{})
 	exportUi := ui.NewExportUi()
 	exportUi.GetDBListRefreshButton().Connect("clicked", func() {
 		ipPort := exportUi.GetIpPort()

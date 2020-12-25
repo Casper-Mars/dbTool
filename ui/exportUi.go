@@ -21,6 +21,7 @@ type ExportUi struct {
 func NewExportUi() *ExportUi {
 	layout, err := gtk.GridNew()
 	if err != nil {
+		log.Print(err)
 		log.Fatal(err)
 	}
 	layout.SetMarginBottom(10)
@@ -39,6 +40,7 @@ func NewExportUi() *ExportUi {
 	//exportUi.dbNames = createInputFormRow("数据库s", layout, 4)
 	rb, err := gtk.ButtonNewWithLabel("刷新数据库列表")
 	if err != nil {
+		log.Print(err)
 		log.Fatal(err)
 	}
 	layout.Attach(rb, 0, 5, 3, 1)
@@ -48,6 +50,7 @@ func NewExportUi() *ExportUi {
 	exportUi.dbList = dbList
 	cb, err := gtk.ButtonNewWithLabel("导出")
 	if err != nil {
+		log.Print(err)
 		log.Fatal(err)
 	}
 	layout.Attach(cb, 0, 7, 3, 1)

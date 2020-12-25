@@ -2,16 +2,17 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/Casper-Mars/dbTool/pojo"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/xormplus/xorm"
-	"github.com/xormplus/xorm/schemas"
 )
 
 type MysqlService struct {
 }
 
 func (receiver MysqlService) GetAllTableInfo(username string, password string, ipPort string, dbName string) ([]pojo.TableInfo, error) {
-	engine, err := openConnect(username, password, ipPort, dbName)
+	engine, err := xorm.NewEngine("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", username, password, ipPort, dbName))
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +33,7 @@ func (receiver MysqlService) GetAllTableInfo(username string, password string, i
 }
 
 func (receiver MysqlService) GetAllDBs(username string, password string, ipPort string) ([]string, error) {
-	db, err := sql.Open("mysql", username+":"+password+"@tcp("+ipPort+")/")
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/", username, password, ipPort))
 	if err != nil {
 		return nil, err
 	}
@@ -51,26 +52,4 @@ func (receiver MysqlService) GetAllDBs(username string, password string, ipPort 
 		dbNameList = append(dbNameList, dbName)
 	}
 	return dbNameList, nil
-}
-
-func extractCol(table *schemas.Table) []pojo.ColInfo {
-	cols := make([]pojo.ColInfo, len(table.Columns()))
-	for i, k := range table.Columns() {
-		var col pojo.ColInfo
-		col.Comment = k.Comment
-		col.ColName = k.Name
-		col.ColType = k.SQLType.Name
-		col.IsPrimary = k.IsPrimaryKey
-		col.Len = k.Length
-		cols[i] = col
-	}
-	return cols
-}
-func openConnect(username string, password string, ipPort string, dbName string) (*xorm.Engine, error) {
-	url := username + ":" + password + "@tcp(" + ipPort + ")/" + dbName + "?charset=utf8"
-	engine, err := xorm.NewEngine("mysql", url)
-	if err != nil {
-		return nil, err
-	}
-	return engine, nil
 }

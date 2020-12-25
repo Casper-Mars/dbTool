@@ -7,18 +7,19 @@ import (
 	"github.com/Casper-Mars/officeTool/measurement"
 	"github.com/Casper-Mars/officeTool/schema/soo/wml"
 	"log"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
 )
 
-type ExportToWordService struct {
+type WordExportService struct {
 }
 
-func (service ExportToWordService) Export(ipPort string, username string, password string, dbName string, storeLocation string, tableInfos []pojo.TableInfo) {
-	if checkParam(ipPort, username, password, dbName) {
-		log.Println("参数不能为空")
-		return
+func (service WordExportService) Export(dbName string, storeLocation string, tableInfos []pojo.TableInfo) {
+	if len(dbName) == 0 {
+		log.Printf("数据库名称为空")
+		dbName = strconv.Itoa(rand.Int())
 	}
 	if len(storeLocation) == 0 {
 		storeLocation = "." + string(os.PathSeparator)
@@ -26,13 +27,6 @@ func (service ExportToWordService) Export(ipPort string, username string, passwo
 		storeLocation = storeLocation + string(os.PathSeparator)
 	}
 	export(tableInfos, dbName, storeLocation)
-}
-
-func checkParam(ipPort string, username string, password string, dbNames string) bool {
-	if ipPort == "" || username == "" || password == "" || dbNames == "" {
-		return true
-	}
-	return false
 }
 
 func export(tables []pojo.TableInfo, dbName string, storeLocation string) {

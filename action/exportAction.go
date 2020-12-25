@@ -33,7 +33,7 @@ func (receiver ExportAction) Export(ipPort string, username string, password str
 		if err != nil {
 			return err
 		}
-		receiver.exportService.Export(ipPort, username, password, dbNames, storeLocation, tableInfos)
+		receiver.exportService.Export(dbName, storeLocation, tableInfos)
 	}
 	return nil
 }

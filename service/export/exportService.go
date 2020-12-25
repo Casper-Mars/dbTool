@@ -3,5 +3,5 @@ package export
 import "github.com/Casper-Mars/dbTool/pojo"
 
 type ExportService interface {
-	Export(ipPort string, username string, password string, dbName string, storeLocation string, tableInfos []pojo.TableInfo)
+	Export(dbName string, storeLocation string, tableInfos []pojo.TableInfo)
 }
