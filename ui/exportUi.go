@@ -16,6 +16,7 @@ type ExportUi struct {
 	refreshDBListButton *gtk.Button
 	layout              *gtk.Grid
 	dbList              *DBListWidget
+	sqlType             *gtk.ComboBoxText
 }
 
 func NewExportUi() *ExportUi {
@@ -28,16 +29,17 @@ func NewExportUi() *ExportUi {
 	layout.SetMarginTop(10)
 	layout.SetMarginStart(10)
 	layout.SetMarginEnd(10)
-	//index :=0
 	exportUi := ExportUi{}
 	exportUi.layout = layout
 	layout.SetColumnSpacing(10)
 	layout.SetRowSpacing(10)
-	exportUi.ipPort = createInputFormRow("ip和端口", layout, 0)
-	exportUi.username = createInputFormRow("用户名", layout, 1)
-	exportUi.password = createInputFormRow("密码", layout, 2)
-	exportUi.storeLocation = createInputFormRow("存储位置", layout, 3)
-	//exportUi.dbNames = createInputFormRow("数据库s", layout, 4)
+	exportUi.ipPort = exportUi.createInputFormRow("ip和端口", layout, 0)
+	exportUi.username = exportUi.createInputFormRow("用户名", layout, 1)
+	exportUi.password = exportUi.createInputFormRow("密码", layout, 2)
+	//exportUi.storeLocation = exportUi.createInputFormRow("数据库类型", layout, 3)
+	exportUi.storeLocation = exportUi.createInputFormRow("存储位置", layout, 3)
+
+	exportUi.createSqlTypeContent(layout, 4, []string{"mysql", "mssql"})
 	rb, err := gtk.ButtonNewWithLabel("刷新数据库列表")
 	if err != nil {
 		log.Print(err)
@@ -96,6 +98,10 @@ func (ui ExportUi) GetStoreLocation() string {
 	return text
 }
 
+func (ui ExportUi) GetSqlType() string {
+	return ui.sqlType.GetActiveText()
+}
+
 func (ui ExportUi) GetBox() *gtk.Grid {
 	return ui.layout
 }
@@ -119,7 +125,7 @@ func (ui ExportUi) GetContent() gtk.IWidget {
 	return ui.layout
 }
 
-func createInputFormRow(labelName string, layout *gtk.Grid, rowIndex int) *gtk.Entry {
+func (ui ExportUi) createInputFormRow(labelName string, layout *gtk.Grid, rowIndex int) *gtk.Entry {
 	labelNew, err := gtk.LabelNew(labelName)
 	if err != nil {
 		log.Fatal(err)
@@ -132,4 +138,24 @@ func createInputFormRow(labelName string, layout *gtk.Grid, rowIndex int) *gtk.E
 	entryNew.SetWidthChars(100)
 	layout.Attach(entryNew, 1, rowIndex, 2, 1)
 	return entryNew
+}
+
+func (ui *ExportUi) createSqlTypeContent(layout *gtk.Grid, rowIndex int, sqlTypeList []string) {
+	labelNew, err := gtk.LabelNew("数据库类型")
+	if err != nil {
+		log.Print(err)
+		panic(err)
+	}
+	layout.Attach(labelNew, 0, rowIndex, 1, 1)
+	textNew, err := gtk.ComboBoxTextNew()
+	if err != nil {
+		log.Print(err)
+		panic(err)
+	}
+	for _, k := range sqlTypeList {
+		textNew.AppendText(k)
+	}
+	textNew.SetActive(0)
+	layout.Attach(textNew, 1, rowIndex, 1, 1)
+	ui.sqlType = textNew
 }

@@ -17,17 +17,28 @@ func BuildExportWorker() Worker {
 	return BuildExportWorkerWithWindow(nil)
 }
 func BuildExportWorkerWithWindow(app *gtk.Window) Worker {
-	exportAction := action.NewExportAction(export.WordExportService{}, db.MysqlService{})
 	exportUi := ui.NewExportUi()
 	exportUi.GetDBListRefreshButton().Connect("clicked", func() {
 		ipPort := exportUi.GetIpPort()
 		username := exportUi.GetUsername()
 		pwd := exportUi.GetPassword()
+		sqlType := exportUi.GetSqlType()
 		log.Println("ipPort:" + ipPort)
 		log.Println("username:" + username)
 		log.Println("password:" + pwd)
-		//list, err := exportAction.GetDBList("root", "!Zhisheng2020", "192.168.123.155:3306")
-		list, err := exportAction.GetDBList(username, pwd, ipPort)
+		log.Println("sqlType:" + sqlType)
+		var act *action.ExportAction
+		switch sqlType {
+		case "mysql":
+			act = action.NewExportAction(export.WordExportService{}, db.MysqlService{})
+		case "mssql":
+			act = action.NewExportAction(export.WordExportService{}, db.MsService{})
+		default:
+			ui.ShowWarning(app, "请选择数据库类型")
+			return
+		}
+		//list, err := act.GetDBList("root", "!Zhisheng2020", "192.168.123.155:3306")
+		list, err := act.GetDBList(username, pwd, ipPort)
 		if err != nil {
 			if app != nil {
 				ui.ShowWarning(app, err.Error())
@@ -46,12 +57,24 @@ func BuildExportWorkerWithWindow(app *gtk.Window) Worker {
 		password := exportUi.GetPassword()
 		names := exportUi.GetDbNames()
 		storeLocation := exportUi.GetStoreLocation()
+		sqlType := exportUi.GetSqlType()
 		log.Println("ipPort:" + ipPort)
 		log.Println("username:" + username)
 		log.Println("password:" + password)
 		log.Println("dbNames:" + names)
 		log.Println("storeLocation:" + storeLocation)
-		err := exportAction.Export(ipPort, username, password, names, storeLocation)
+		log.Println("sqlType:" + sqlType)
+		var act *action.ExportAction
+		switch sqlType {
+		case "mysql":
+			act = action.NewExportAction(export.WordExportService{}, db.MysqlService{})
+		case "mssql":
+			act = action.NewExportAction(export.WordExportService{}, db.MsService{})
+		default:
+			ui.ShowWarning(app, "请选择数据库类型")
+			return
+		}
+		err := act.Export(ipPort, username, password, names, storeLocation)
 		if err != nil {
 			if app != nil {
 				ui.ShowWarning(app, err.Error())
