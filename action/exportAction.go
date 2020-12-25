@@ -2,17 +2,17 @@ package action
 
 import (
 	"fmt"
-	"github.com/Casper-Mars/dbTool/service"
 	"github.com/Casper-Mars/dbTool/service/db"
+	"github.com/Casper-Mars/dbTool/service/export"
 	"strings"
 )
 
 type ExportAction struct {
-	exportService service.ExportService
+	exportService export.ExportService
 	dbService     db.DataBaseService
 }
 
-func NewExportAction(exportService service.ExportService, dbService db.DataBaseService) *ExportAction {
+func NewExportAction(exportService export.ExportService, dbService db.DataBaseService) *ExportAction {
 	return &ExportAction{
 		exportService: exportService,
 		dbService:     dbService,

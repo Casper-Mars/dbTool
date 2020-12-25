@@ -1,4 +1,4 @@
-package service
+package export
 
 import (
 	"github.com/Casper-Mars/dbTool/pojo"
@@ -7,10 +7,35 @@ import (
 	"github.com/Casper-Mars/officeTool/measurement"
 	"github.com/Casper-Mars/officeTool/schema/soo/wml"
 	"log"
+	"os"
 	"strconv"
+	"strings"
 )
 
-func Export(tables []pojo.TableInfo, dbName string, storeLocation string) {
+type ExportToWordService struct {
+}
+
+func (service ExportToWordService) Export(ipPort string, username string, password string, dbName string, storeLocation string, tableInfos []pojo.TableInfo) {
+	if checkParam(ipPort, username, password, dbName) {
+		log.Println("参数不能为空")
+		return
+	}
+	if len(storeLocation) == 0 {
+		storeLocation = "." + string(os.PathSeparator)
+	} else if !strings.HasSuffix(storeLocation, string(os.PathSeparator)) {
+		storeLocation = storeLocation + string(os.PathSeparator)
+	}
+	export(tableInfos, dbName, storeLocation)
+}
+
+func checkParam(ipPort string, username string, password string, dbNames string) bool {
+	if ipPort == "" || username == "" || password == "" || dbNames == "" {
+		return true
+	}
+	return false
+}
+
+func export(tables []pojo.TableInfo, dbName string, storeLocation string) {
 
 	doc := document.New()
 	defer doc.Close()

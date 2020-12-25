@@ -2,8 +2,8 @@ package worker
 
 import (
 	"github.com/Casper-Mars/dbTool/action"
-	"github.com/Casper-Mars/dbTool/service"
 	"github.com/Casper-Mars/dbTool/service/db"
+	"github.com/Casper-Mars/dbTool/service/export"
 	"github.com/Casper-Mars/dbTool/ui"
 	"github.com/gotk3/gotk3/gtk"
 	"log"
@@ -17,7 +17,7 @@ func BuildExportWorker() Worker {
 	return BuildExportWorkerWithWindow(nil)
 }
 func BuildExportWorkerWithWindow(app *gtk.Window) Worker {
-	exportAction := action.NewExportAction(service.ExportToWordService{}, db.MysqlService{})
+	exportAction := action.NewExportAction(export.ExportToWordService{}, db.MysqlService{})
 	exportUi := ui.NewExportUi()
 	exportUi.GetDBListRefreshButton().Connect("clicked", func() {
 		ipPort := exportUi.GetIpPort()
