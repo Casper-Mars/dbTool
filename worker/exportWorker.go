@@ -45,11 +45,7 @@ func BuildExportWorkerWithWindow(app *gtk.Window) Worker {
 			}
 			return
 		}
-		if len(list) > 0 {
-			for _, k := range list {
-				exportUi.AddDBToList(k)
-			}
-		}
+		exportUi.AddDBList(list)
 	})
 	exportUi.GetConfirmButton().Connect("clicked", func() {
 		ipPort := exportUi.GetIpPort()

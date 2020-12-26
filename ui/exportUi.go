@@ -114,6 +114,19 @@ func (ui ExportUi) GetDBListRefreshButton() *gtk.Button {
 	return ui.refreshDBListButton
 }
 
+func (ui ExportUi) AddDBList(dbNames []string) {
+	if len(dbNames) == 0 {
+		return
+	}
+	ui.dbList.resetDBList()
+	for _, k := range dbNames {
+		err := ui.dbList.AddDB(k)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
 func (ui ExportUi) AddDBToList(dbName string) {
 	err := ui.dbList.AddDB(dbName)
 	if err != nil {

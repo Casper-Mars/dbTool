@@ -6,26 +6,28 @@ import (
 	"log"
 )
 
-var MaxWidth = 3
-
-var counter = 0
-
-var rowIndex = 0
-
 type DBListWidget struct {
 	layout       *gtk.Grid
 	checkBoxList []*gtk.CheckButton
+	maxWidth     int
+	counter      int
+	rowIndex     int
 }
 
 func NewDBListWidget() *DBListWidget {
 	gridNew, err := gtk.GridNew()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
-	return &DBListWidget{
-		layout:       gridNew,
-		checkBoxList: make([]*gtk.CheckButton, 0),
+	widget := DBListWidget{
+		layout: gridNew,
 	}
+	widget.init()
+	return &widget
+}
+
+func (widget *DBListWidget) resetDBList() {
+	widget.init()
 }
 
 func (widget *DBListWidget) AddDB(dbName string) error {
@@ -37,12 +39,12 @@ func (widget *DBListWidget) AddDB(dbName string) error {
 		log.Fatal(err)
 		return err
 	}
-	if counter >= MaxWidth {
-		counter = 0
-		rowIndex++
+	if widget.counter >= widget.maxWidth {
+		widget.counter = 0
+		widget.rowIndex++
 	}
-	widget.layout.Attach(label, counter, rowIndex, 1, 1)
-	counter++
+	widget.layout.Attach(label, widget.counter, widget.rowIndex, 1, 1)
+	widget.counter++
 	label.Show()
 	widget.checkBoxList = append(widget.checkBoxList, label)
 	return nil
@@ -70,4 +72,14 @@ func (widget DBListWidget) getDBList(selected bool) []string {
 		}
 	}
 	return result
+}
+
+func (widget *DBListWidget) init() {
+	for _, k := range widget.checkBoxList {
+		widget.layout.Remove(k)
+	}
+	widget.maxWidth = 3
+	widget.counter = 0
+	widget.rowIndex = 0
+	widget.checkBoxList = make([]*gtk.CheckButton, 0)
 }
