@@ -4,7 +4,6 @@
 
 ![avatar](imgs/mainWindow.png)
 
-
 ## 数据项说明
 
 * ipPort
@@ -23,12 +22,16 @@
 
 > 导出的word文档存放的位置
 
+* 数据库类型
+
+> 选择数据库，目前有mysql和mssql
+
 ## 数据库导出支持列表
 
 |数据库|是否支持|
 |---|---|
 |mysql|支持|
-|sqlserver|不支持|
+|sqlserver|支持|
 |oracle|不支持|
 |SQLit|不支持|
 
