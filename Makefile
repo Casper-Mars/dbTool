@@ -1,4 +1,4 @@
-VERSION = 0_4
+VERSION = 0_4_1
 
 buildLinux:
 	go build -o DBTool-$(VERSION)-linux_amd64 -x -v ./
